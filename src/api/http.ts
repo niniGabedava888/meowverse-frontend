@@ -20,7 +20,11 @@ export async function http<T>(
     let message = `Request failed (${response.status})`;
     try {
       const error = await response.json();
-      message = error.message ?? message;
+      if (Array.isArray(error.message)) {
+        message = error.message.join(". ");
+      } else if (error.message) {
+        message = error.message;
+      }
     } catch {}
     throw new Error(message);
   }
